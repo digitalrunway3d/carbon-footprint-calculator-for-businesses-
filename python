@@ -1,0 +1,65 @@
+# Define emission factors (CO2e per unit of input)
+emission_factors = {
+    "electricity": 0.233,  # kg CO2e per kWh (average global emission factor)
+    "fuel": 2.31,          # kg CO2e per liter of gasoline
+    "flight": 0.15,        # kg CO2e per km for air travel (economy class)
+    "truck_transport": 0.22,  # kg CO2e per km for road transport (truck)
+    "rail_transport": 0.03,   # kg CO2e per km for rail transport
+    "water_usage": 0.002,  # kg CO2e per liter of water
+    "waste_landfill": 1.3,  # kg CO2e per kg of waste to landfill
+    "waste_recycled": 0.05  # kg CO2e per kg of recycled material
+}
+
+# Function to calculate energy-based emissions (Scope 2)
+def calculate_energy_emissions(electricity_kwh, fuel_liters):
+    electricity_emissions = electricity_kwh * emission_factors["electricity"]
+    fuel_emissions = fuel_liters * emission_factors["fuel"]
+    return electricity_emissions + fuel_emissions
+
+# Function to calculate transportation emissions (Scope 1 & 3)
+def calculate_transportation_emissions(flight_km, truck_km, rail_km):
+    flight_emissions = flight_km * emission_factors["flight"]
+    truck_emissions = truck_km * emission_factors["truck_transport"]
+    rail_emissions = rail_km * emission_factors["rail_transport"]
+    return flight_emissions + truck_emissions + rail_emissions
+
+# Function to calculate waste and water-related emissions (Scope 3)
+def calculate_waste_water_emissions(water_liters, waste_kg, recycled_kg):
+    water_emissions = water_liters * emission_factors["water_usage"]
+    landfill_emissions = waste_kg * emission_factors["waste_landfill"]
+    recycled_emissions = recycled_kg * emission_factors["waste_recycled"]
+    return water_emissions + landfill_emissions + recycled_emissions
+
+# Main function to collect inputs and calculate total carbon footprint
+def calculate_carbon_footprint():
+    print("Enter energy usage data:")
+    electricity_kwh = float(input("Electricity used (in kWh): "))
+    fuel_liters = float(input("Fuel used (in liters): "))
+    
+    print("\nEnter transportation data:")
+    flight_km = float(input("Distance flown (in km): "))
+    truck_km = float(input("Distance by truck transport (in km): "))
+    rail_km = float(input("Distance by rail transport (in km): "))
+    
+    print("\nEnter waste and water usage data:")
+    water_liters = float(input("Water used (in liters): "))
+    waste_kg = float(input("Waste sent to landfill (in kg): "))
+    recycled_kg = float(input("Recycled waste (in kg): "))
+    
+    # Calculate emissions from each category
+    energy_emissions = calculate_energy_emissions(electricity_kwh, fuel_liters)
+    transportation_emissions = calculate_transportation_emissions(flight_km, truck_km, rail_km)
+    waste_water_emissions = calculate_waste_water_emissions(water_liters, waste_kg, recycled_kg)
+    
+    # Calculate total carbon footprint
+    total_carbon_footprint = energy_emissions + transportation_emissions + waste_water_emissions
+    
+    # Output results
+    print(f"\nTotal Carbon Footprint: {total_carbon_footprint:.2f} kg CO2e")
+    print(f" - Energy Emissions: {energy_emissions:.2f} kg CO2e")
+    print(f" - Transportation Emissions: {transportation_emissions:.2f} kg CO2e")
+    print(f" - Waste and Water Emissions: {waste_water_emissions:.2f} kg CO2e")
+
+# Run the program
+if __name__ == "__main__":
+    calculate_carbon_footprint()
