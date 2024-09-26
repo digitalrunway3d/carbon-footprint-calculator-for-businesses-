@@ -1,0 +1,105 @@
+# Emission factors (in kg CO2e per unit)
+emission_factors = {
+    "electricity": 0.233,  # kg CO2e per kWh (average global emission factor)
+    "natural_gas": 2.03,   # kg CO2e per cubic meter of natural gas
+    "heating_oil": 2.68,   # kg CO2e per liter of heating oil
+    "car_fuel": 2.31,      # kg CO2e per liter of gasoline
+    "flight_short": 0.15,  # kg CO2e per km for short-haul flights
+    "flight_long": 0.11,   # kg CO2e per km for long-haul flights
+    "bus": 0.102,          # kg CO2e per km for bus travel
+    "train": 0.03,         # kg CO2e per km for rail travel
+    "water": 0.002,        # kg CO2e per liter of water used
+    "waste_landfill": 1.3, # kg CO2e per kg of waste to landfill
+    "waste_recycled": 0.05, # kg CO2e per kg of recycled waste
+    "meat_diet": 2.5,      # kg CO2e per day for a meat-based diet
+    "vegetarian_diet": 1.7, # kg CO2e per day for a vegetarian diet
+    "vegan_diet": 1.5,     # kg CO2e per day for a vegan diet
+}
+
+# Functions for each category of emissions
+def calculate_home_energy(electricity_kwh, heating_gas_m3, heating_oil_liters):
+    electricity_emissions = electricity_kwh * emission_factors["electricity"]
+    gas_emissions = heating_gas_m3 * emission_factors["natural_gas"]
+    oil_emissions = heating_oil_liters * emission_factors["heating_oil"]
+    return electricity_emissions + gas_emissions + oil_emissions
+
+def calculate_transportation(car_fuel_liters, flight_short_km, flight_long_km, bus_km, train_km):
+    car_emissions = car_fuel_liters * emission_factors["car_fuel"]
+    short_flight_emissions = flight_short_km * emission_factors["flight_short"]
+    long_flight_emissions = flight_long_km * emission_factors["flight_long"]
+    bus_emissions = bus_km * emission_factors["bus"]
+    train_emissions = train_km * emission_factors["train"]
+    return car_emissions + short_flight_emissions + long_flight_emissions + bus_emissions + train_emissions
+
+def calculate_diet(diet_type, days_per_week):
+    if diet_type == "meat":
+        diet_emissions = days_per_week * emission_factors["meat_diet"]
+    elif diet_type == "vegetarian":
+        diet_emissions = days_per_week * emission_factors["vegetarian_diet"]
+    elif diet_type == "vegan":
+        diet_emissions = days_per_week * emission_factors["vegan_diet"]
+    return diet_emissions
+
+def calculate_waste(waste_kg, recycled_kg):
+    landfill_emissions = waste_kg * emission_factors["waste_landfill"]
+    recycled_emissions = recycled_kg * emission_factors["waste_recycled"]
+    return landfill_emissions + recycled_emissions
+
+def calculate_water(water_liters):
+    return water_liters * emission_factors["water"]
+
+# Main function to calculate personal carbon footprint
+def calculate_personal_carbon_footprint():
+    print("Enter home energy usage:")
+    electricity_kwh = float(input("Electricity used (kWh per month): ")) * 12  # Annualized
+    heating_gas_m3 = float(input("Natural gas used (cubic meters per month): ")) * 12
+    heating_oil_liters = float(input("Heating oil used (liters per month): ")) * 12
+    
+    home_energy_emissions = calculate_home_energy(electricity_kwh, heating_gas_m3, heating_oil_liters)
+    
+    print("\nEnter transportation data:")
+    car_fuel_liters = float(input("Car fuel used (liters per year): "))
+    flight_short_km = float(input("Distance traveled by short-haul flights (in km per year): "))
+    flight_long_km = float(input("Distance traveled by long-haul flights (in km per year): "))
+    bus_km = float(input("Distance traveled by bus (in km per year): "))
+    train_km = float(input("Distance traveled by train (in km per year): "))
+    
+    transportation_emissions = calculate_transportation(car_fuel_liters, flight_short_km, flight_long_km, bus_km, train_km)
+    
+    print("\nEnter dietary habits:")
+    diet_type = input("Diet type (meat, vegetarian, vegan): ").lower()
+    days_per_week = int(input("How many days per week do you follow this diet?: "))
+    
+    diet_emissions = calculate_diet(diet_type, days_per_week * 52)  # Annualized
+    
+    print("\nEnter waste data:")
+    waste_kg = float(input("Waste sent to landfill (in kg per week): ")) * 52  # Annualized
+    recycled_kg = float(input("Recycled waste (in kg per week): ")) * 52  # Annualized
+    
+    waste_emissions = calculate_waste(waste_kg, recycled_kg)
+    
+    print("\nEnter water usage data:")
+    water_liters = float(input("Water used (in liters per day): ")) * 365  # Annualized
+    
+    water_emissions = calculate_water(water_liters)
+    
+    # Calculate total footprint
+    total_carbon_footprint = (
+        home_energy_emissions +
+        transportation_emissions +
+        diet_emissions +
+        waste_emissions +
+        water_emissions
+    )
+    
+    # Output results
+    print(f"\nYour total personal carbon footprint: {total_carbon_footprint:.2f} kg CO2e per year")
+    print(f" - Home Energy Emissions: {home_energy_emissions:.2f} kg CO2e")
+    print(f" - Transportation Emissions: {transportation_emissions:.2f} kg CO2e")
+    print(f" - Dietary Emissions: {diet_emissions:.2f} kg CO2e")
+    print(f" - Waste Emissions: {waste_emissions:.2f} kg CO2e")
+    print(f" - Water Usage Emissions: {water_emissions:.2f} kg CO2e")
+
+# Run the program
+if __name__ == "__main__":
+    calculate_personal_carbon_footprint()
