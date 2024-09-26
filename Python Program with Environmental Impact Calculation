@@ -1,0 +1,151 @@
+# Define the data categories and initialize storage for fashion habits
+fashion_data = {
+    "fast_fashion_purchases": {"items_per_month": 0, "average_cost_per_item": 0, "lifespan_months": 0, "impact_score": 0},
+    "seasonal_shopping": {"items_per_season": 0, "spending_per_season": 0, "seasons": 0, "impact_score": 0},
+    "capsule_wardrobe": {"total_items": 0, "outfit_combinations": 0, "average_lifespan": 0, "impact_score": 0},
+    "sustainable_fashion": {"percent_sustainable": 0, "secondhand_items": 0, "impact_score": 0},
+    "brand_loyalty": {"brands": {}, "percent_spend_on_favorite": 0, "impact_score": 0},
+    "secondhand_shopping": {"items_bought_per_month": 0, "average_price": 0, "impact_score": 0},
+    "impulse_buying": {"items_per_month": 0, "average_cost_per_item": 0, "items_unused": 0, "impact_score": 0},
+    "designer_luxury_fashion": {"items_per_year": 0, "average_cost_per_item": 0, "impact_score": 0},
+    "online_shopping": {"online_vs_instore": 0, "return_rate": 0, "orders_per_year": 0, "impact_score": 0},
+    "wardrobe_decluttering": {"decluttering_sessions_per_year": 0, "items_removed_per_session": 0, "impact_score": 0}
+}
+
+# Impact factors for each habit (kg CO2e, liters of water, etc.)
+# These are sample values based on average environmental impact per item or behavior
+impact_factors = {
+    "fast_fashion_item": 10,  # kg CO2e per fast fashion item
+    "seasonal_item": 8,       # kg CO2e per seasonal item
+    "sustainable_item": 4,    # kg CO2e for a sustainable/ethical item
+    "secondhand_item": 2,     # kg CO2e for a secondhand item
+    "luxury_item": 20,        # kg CO2e per luxury item
+    "impulse_item": 12,       # kg CO2e per impulse buy
+    "online_order": 5,        # kg CO2e per online order (due to shipping and returns)
+    "item_disposed": 6        # kg CO2e per item disposed of (landfill/waste impact)
+}
+
+# Function to input and update data points for each habit and calculate impact
+def input_fashion_habit(habit_name):
+    if habit_name == "fast_fashion_purchases":
+        fashion_data["fast_fashion_purchases"]["items_per_month"] = int(input("How many fast fashion items do you buy per month?: "))
+        fashion_data["fast_fashion_purchases"]["average_cost_per_item"] = float(input("What is the average cost per fast fashion item?: "))
+        fashion_data["fast_fashion_purchases"]["lifespan_months"] = int(input("What is the average lifespan of these items in months?: "))
+        # Calculate environmental impact
+        items_per_year = fashion_data["fast_fashion_purchases"]["items_per_month"] * 12
+        fashion_data["fast_fashion_purchases"]["impact_score"] = items_per_year * impact_factors["fast_fashion_item"]
+    
+    elif habit_name == "seasonal_shopping":
+        fashion_data["seasonal_shopping"]["items_per_season"] = int(input("How many items do you buy per season?: "))
+        fashion_data["seasonal_shopping"]["spending_per_season"] = float(input("How much do you spend per season on new items?: "))
+        fashion_data["seasonal_shopping"]["seasons"] = int(input("How many seasons do you shop for each year?: "))
+        # Calculate environmental impact
+        total_items_per_year = fashion_data["seasonal_shopping"]["items_per_season"] * fashion_data["seasonal_shopping"]["seasons"]
+        fashion_data["seasonal_shopping"]["impact_score"] = total_items_per_year * impact_factors["seasonal_item"]
+
+    elif habit_name == "capsule_wardrobe":
+        fashion_data["capsule_wardrobe"]["total_items"] = int(input("How many total items are in your capsule wardrobe?: "))
+        fashion_data["capsule_wardrobe"]["outfit_combinations"] = int(input("How many outfits can you make from your wardrobe?: "))
+        fashion_data["capsule_wardrobe"]["average_lifespan"] = int(input("What is the average lifespan of items in your wardrobe (in years)?: "))
+        # Capsule wardrobe is eco-friendly, so lower impact
+        fashion_data["capsule_wardrobe"]["impact_score"] = fashion_data["capsule_wardrobe"]["total_items"] * impact_factors["sustainable_item"]
+
+    elif habit_name == "sustainable_fashion":
+        fashion_data["sustainable_fashion"]["percent_sustainable"] = float(input("What percentage of your purchases are from sustainable brands?: "))
+        fashion_data["sustainable_fashion"]["secondhand_items"] = int(input("How many secondhand items do you buy per year?: "))
+        # Sustainable purchases and secondhand shopping have lower impact
+        total_sustainable_items = fashion_data["sustainable_fashion"]["secondhand_items"]
+        fashion_data["sustainable_fashion"]["impact_score"] = total_sustainable_items * impact_factors["sustainable_item"]
+
+    elif habit_name == "brand_loyalty":
+        num_brands = int(input("How many brands are you loyal to?: "))
+        for i in range(num_brands):
+            brand_name = input(f"Enter brand name #{i+1}: ")
+            spend_percent = float(input(f"What percent of your clothing spend is on {brand_name}?: "))
+            fashion_data["brand_loyalty"]["brands"][brand_name] = spend_percent
+        fashion_data["brand_loyalty"]["percent_spend_on_favorite"] = max(fashion_data["brand_loyalty"]["brands"].values())
+        # Assuming loyal purchases have average impact
+        total_items_bought = num_brands * 5  # Example number of items bought per brand
+        fashion_data["brand_loyalty"]["impact_score"] = total_items_bought * impact_factors["sustainable_item"]
+
+    elif habit_name == "secondhand_shopping":
+        fashion_data["secondhand_shopping"]["items_bought_per_month"] = int(input("How many secondhand items do you buy per month?: "))
+        fashion_data["secondhand_shopping"]["average_price"] = float(input("What is the average price of secondhand items?: "))
+        # Calculate environmental impact
+        items_per_year = fashion_data["secondhand_shopping"]["items_bought_per_month"] * 12
+        fashion_data["secondhand_shopping"]["impact_score"] = items_per_year * impact_factors["secondhand_item"]
+
+    elif habit_name == "impulse_buying":
+        fashion_data["impulse_buying"]["items_per_month"] = int(input("How many items do you buy impulsively each month?: "))
+        fashion_data["impulse_buying"]["average_cost_per_item"] = float(input("What is the average cost per impulse buy?: "))
+        fashion_data["impulse_buying"]["items_unused"] = int(input("How many of these items remain unworn or unused?: "))
+        # Calculate environmental impact
+        total_impulse_items = fashion_data["impulse_buying"]["items_per_month"] * 12
+        unused_items = fashion_data["impulse_buying"]["items_unused"]
+        fashion_data["impulse_buying"]["impact_score"] = total_impulse_items * impact_factors["impulse_item"] + unused_items * impact_factors["item_disposed"]
+
+    elif habit_name == "designer_luxury_fashion":
+        fashion_data["designer_luxury_fashion"]["items_per_year"] = int(input("How many designer or luxury items do you buy per year?: "))
+        fashion_data["designer_luxury_fashion"]["average_cost_per_item"] = float(input("What is the average cost per designer/luxury item?: "))
+        # Calculate environmental impact
+        fashion_data["designer_luxury_fashion"]["impact_score"] = fashion_data["designer_luxury_fashion"]["items_per_year"] * impact_factors["luxury_item"]
+
+    elif habit_name == "online_shopping":
+        fashion_data["online_shopping"]["online_vs_instore"] = float(input("What percentage of your purchases are online versus in-store?: "))
+        fashion_data["online_shopping"]["return_rate"] = float(input("What is the return rate for online purchases (in percent)?: "))
+        fashion_data["online_shopping"]["orders_per_year"] = int(input("How many orders do you place online per year?: "))
+        # Calculate environmental impact (impact of shipping and returns)
+        fashion_data["online_shopping"]["impact_score"] = fashion_data["online_shopping"]["orders_per_year"] * impact_factors["online_order"]
+
+    elif habit_name == "wardrobe_decluttering":
+        fashion_data["wardrobe_decluttering"]["decluttering_sessions_per_year"] = int(input("How many decluttering sessions do you have per year?: "))
+        fashion_data["wardrobe_decluttering"]["items_removed_per_session"] = int(input("How many items do you remove per session?: "))
+        # Calculate environmental impact of disposal
+        total_items_removed = fashion_data["wardrobe_decluttering"]["decluttering_sessions_per_year"] * fashion_data["wardrobe_decluttering"]["items_removed_per_session"]
+        fashion_data["wardrobe_decluttering"]["impact_score"] = total_items_removed * impact_factors["item_disposed"]
+
+# Function to show the summary of fashion habits and environmental impact
+def show_summary():
+    print("\n--- Fashion Habits Summary and Environmental Impact ---")
+    total_impact = 0
+    for habit, data in fashion_data.items():
+        print(f"\nHabit: {habit.replace('_', ' ').title()}")
+        for data_point, value in data.items():
+            if data_point == "impact_score":
+                print(f"  Environmental Impact (kg CO2e): {value:.2f}")
+                total_impact += value
+            else:
+                print(f"  {data_point.replace('_', ' ').title()}: {value}")
+    print(f"\nTotal Environmental Impact: {total_impact:.2f} kg CO2e per year")
+
+# Main menu for input and actions
+def main():
+    print("Fashion Habits Tracker with Environmental Impact\n")
+    habits = [
+        "fast_fashion_purchases", "seasonal_shopping", "capsule_wardrobe", "sustainable_fashion", 
+        "brand_loyalty", "secondhand_shopping", "impulse_buying", "designer_luxury_fashion", 
+        "online_shopping", "wardrobe_decluttering"
+    ]
+    
+    while True:
+        print("\nSelect a habit to track or view the summary:")
+        for idx, habit in enumerate(habits, 1):
+            print(f"{idx}. {habit.replace('_', ' ').title()}")
+        print(f"{len(habits) + 1}. View Summary")
+        print(f"{len(habits) + 2}. Exit")
+        
+        choice = int(input("\nEnter your choice (number): "))
+        
+        if 1 <= choice <= len(habits):
+            input_fashion_habit(habits[choice - 1])
+        elif choice == len(habits) + 1:
+            show_summary()
+        elif choice == len(habits) + 2:
+            print("Exiting Fashion Tracker. Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
+
+# Run the program
+if __name__ == "__main__":
+    main()
